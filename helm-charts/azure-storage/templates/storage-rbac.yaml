@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: storage-create
+  namespace: {{ .Values.namespace }}
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: secret-creator
+  namespace: {{ .Values.namespace }}
+rules:
+- apiGroups: ["*"]
+  resources: ["secrets"]
+  verbs: ["create"]
+
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: secret-creator
+  namespace: {{ .Values.namespace }}
+subjects:
+- kind: ServiceAccount
+  name: storage-create
+  namespace: {{ .Values.namespace }}
+roleRef:
+  kind: Role
+  name: secret-creator
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# kind: RoleBinding
+# apiVersion: rbac.authorization.k8s.io/v1
+# metadata:
+#   name: secret-creator
+#   namespace: {{ .Values.namespace }}
+# subjects:
+# - kind: ServiceAccount
+#   name: storage-create
+#   apiGroup: rbac.authorization.k8s.io
+# roleRef:
+#   kind: Role
+#   name: secret-creator
+#   apiGroup: rbac.authorization.k8s.io
