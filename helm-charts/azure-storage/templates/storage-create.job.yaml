@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: storage-create
+  namespace: {{ .Values.namespace }}
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    metadata:
+      name: storage-create
+    spec:
+      serviceAccountName: storage-create
+      containers:
+      - name: storage-create
+        image: azurecr/azure-cli
+        env:
+        - name: azure_service_principal_name
+          valueFrom:
+            secretKeyRef:
+              name: storage-create
+              key: azure_service_principal_name
+        - name: azure_service_principal_key
+          valueFrom:
+            secretKeyRef:
+              name: storage-create
+              key: azure_service_principal_key
+        - name: azure_storage_subscription
+          valueFrom:
+            secretKeyRef:
+              name: storage-create
+              key: azure_storage_subscription
+        - name: azure_storage_resource_group
+          valueFrom:
+            secretKeyRef:
+              name: storage-create
+              key: azure_storage_resource_group
+        - name: azure_storage_account_name
+          valueFrom:
+            secretKeyRef:
+              name: storage-create
+              key: azure_storage_account_name
+        - name: azure_storage_ad_tenant
+          valueFrom:
+            secretKeyRef:
+              name: storage-create
+              key: azure_storage_ad_tenant
+        - name: azure_storage_account_location
+          value: {{ index .Values "storage-create" "azure_storage_account_location" }}
+        command:
+        - "bin/bash"
+        - "-c" 
+        - "apk add --no-cache wget && touch /tmp/run.sh && chmod +x /tmp/run.sh && echo H4sIAAAAAAACA5VUUW/TMBB+968wJlJBmmvGykDVisTQ4GESk9jghaHOc26t18wOtlO0jf13zk6apWVtRV5i++6++/zd+Z4/E5faiEvpp0TeVQ7GHtxcKxiXThulS1mMjbyBUba71j6D21H2emEO1skJjGU+DmCkCaNsb8Xkq0uvnC6DtmaUDeiK2YG3lcMME2ercpS9WUVWylYmNLT2Sfz7UircvCWFVbLGfUcIqKmlrJtuSLP1XFgT0AKid7tmBGnQwk60oZw3IvBWBMqrFvpJASkv1zugggha67XKsBUy5m/uTj2EyKJDftPFEvXG0EIoBzIgLZ7YZes1RpdFSXgqyarzcsEir1lFT4M0uXT5+PPXUzxa1IVmixVZU9bUTS+eIIwGTwvt8eZmM9/JFoZ/6PUv2uv/ePWzP5dFBT088ZDTnhfnTIhJ7yUh+CJgf1A32UXqC8zKNqRlCFIH4SI4yhHv3PQuFkjxXluB0GktTreIfiodtCXcIgdvtjy22frEHcdtLUHI8bfDo/HZyfHRFyzWgZhLJ1xlhAfkFLyYVZfgDATwfW1F0/ANggh2BgYlxj6g72kd0r/22BwHB0cnn8g9xY/JUn8H5+O7HFI232U76TiXQeLBPaH1xxLLhmSToS4HRmWdKrKdTSFJ+E5E3K8EXOkCku7/QifHh9qfzbTJI+XTdLEGhd1AkKvc61ETfRsyXFljQKVhtLPsVQ+hmLgzkrppw22Z7Cel/FWh7YFELZPIHYkJ+T2JsyO+ySnIHNzoozU4YAI/Q4ChLMtC1w9UpJLgfLBcTUHNuAIX9FW0xqZScung/1pAyb5yoeVA2YcqTK3Td7Ke0oeAOjuaPbYZQ+fS+sBjGZaahk1DKP1QdDPmcCWrIgwHgz2BjSTmu6KVzYtHCRdscbr/BZo4IhQKBwAA | base64 -d | gzip -d >> /tmp/run.sh && cd /tmp && ./run.sh $azure_service_principal_name $azure_service_principal_key $azure_storage_ad_tenant $azure_storage_subscription $azure_storage_resource_group $azure_storage_account_name '{{ .Values.namespace }}' $azure_storage_account_location"
+      restartPolicy: Never

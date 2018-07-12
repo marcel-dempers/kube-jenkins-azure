@@ -1,0 +1,12 @@
+namespace: default
+storage-create:
+  azure_service_principal_name: https://XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  azure_service_principal_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+  azure_storage_ad_tenant: <youradtenant.onmicrosoft.com>
+  azure_storage_subscription: <Azure-Subscription-ID>
+  azure_storage_resource_group: <Azure-Resource-Group-Name>
+  azure_storage_account_name:  <Azure-Storage-Account-Name>
+  azure_storage_account_location: eastus
+
+jenkins:
+  azurefileshare: <file-share-name>
