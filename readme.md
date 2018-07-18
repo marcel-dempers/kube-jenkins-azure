@@ -25,3 +25,14 @@ helm install --name azure-storage azure-storage --values values.yaml --namespace
 ```
 helm install --name jenkins-azure jenkins-azure --values values.yaml --namespace jenkins
 ```
+
+## Access Jenkins
+
+After a couple of seconds, Jenkins should be accessible
+This will print out logs with initial password for one time auth
+It will also connect through `port-forward` on `http://localhost:8080`
+```
+jenkins=$(kubectl get pods -n jenkins --selector=name=jenkins --output=jsonpath='{.items[*].metadata.name}')
+kubectl logs $jenkins -n jenkins
+kubectl port-forward -n jenkins $jenkins 8080:8080
+```
