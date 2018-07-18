@@ -11,7 +11,7 @@ spec:
   - ReadWriteOnce
   azureFile:
     secretName: storage-connection
-    secretNamespace: {{ .Values.namespace }}
+    secretNamespace: {{ .Release.Namespace }}
     shareName: {{ .Values.jenkins.azurefileshare }}
     readOnly: false
   claimRef:

@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: jenkins
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     name: jenkins
     app: jenkins
@@ -22,6 +22,7 @@ spec:
         name: jenkins
       name: jenkins
     spec:
+      serviceAccountName: jenkins
       containers:
       - env:
         - name: JAVA_OPTS
