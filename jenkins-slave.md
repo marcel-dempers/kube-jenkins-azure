@@ -30,6 +30,11 @@ After installing `kubernetes-plugin` for Jenkins
 
 # Test a build
 
+To run docker commands inside a jenkins agent you will need a custom jenkins agent with docker-in-docker working.
+Take a look and build the docker file in `./dockerfiles/jenkins-agent`
+Push it to a registry and use it instead of above configured `* Docker Image: jenkins/jnlp-slave`
+If you do not use the custom image, the below pipeline will not work because default `* Docker Image: jenkins/jnlp-slave` public image does not have docker ability.
+
 * Add a Jenkins Pipeline
 
 ```
