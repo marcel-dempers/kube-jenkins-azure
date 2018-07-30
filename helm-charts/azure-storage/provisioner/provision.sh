@@ -45,4 +45,13 @@ EOF
 cat secret.json
 
 wget -S --header=Content-Type:application/json --no-check-certificate --ca-certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt --header "Authorization: Bearer $KUBE_TOKEN" --post-file secret.json "https://kubernetes.default:443/api/v1/namespaces/$namespace/secrets"
+ret=$?
+if [ $ret -ne 0 ]; then
+        echo "secret exists, updating..."
+        wget -S --header=Content-Type:application/json --no-check-certificate --ca-certificate /var/run/secrets/kubernetes.io/serviceaccount/ca.crt --method PUT --header "Authorization: Bearer $KUBE_TOKEN" --body-file secret.json "https://kubernetes.default:443/api/v1/namespaces/$namespace/secrets/storage-connection"
+        echo "secret updated"
+else
+        echo "secret created"
+fi
+
 
