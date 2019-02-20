@@ -1,5 +1,7 @@
 FROM openjdk:8-jdk
 
+RUN apt-get update -y && apt-get install -y curl sudo
+
 #Install docker
 RUN curl -sSL https://get.docker.com/ | sh
 
@@ -11,7 +13,8 @@ ARG gid=10000
 ENV HOME /home/${user}
 RUN groupadd -g ${gid} ${group}
 RUN useradd -c "Jenkins user" -d $HOME -u ${uid} -g ${gid} -m ${user}
-RUN usermod -aG docker jenkins
+RUN usermod -aG docker ${user}
+RUN usermod -aG sudo ${user}
 
 ARG VERSION=3.20
 ARG AGENT_WORKDIR=/home/${user}/agent
@@ -26,6 +29,8 @@ RUN curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-co
     
 COPY jenkins-slave /usr/local/bin/jenkins-slave
 RUN chmod 777 /usr/local/bin/jenkins-slave
+
+RUN echo 'jenkins ALL=(ALL) NOPASSWD:ALL'| sudo EDITOR='tee -a' visudo
 
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR}
